@@ -65,7 +65,6 @@ require('lazy').setup({
 
   -- Neo-tree is a Neovim plugin to browse the file system
   -- https://github.com/nvim-neo-tree/neo-tree.nvim
-
   {
     'nvim-neo-tree/neo-tree.nvim',
     version = '*',
@@ -76,10 +75,14 @@ require('lazy').setup({
     },
     lazy = false,
     keys = {
-      { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
+      { '\\', ':Neotree toggle current reveal_force_cwd position=right<CR>', desc = 'NeoTree reveal', silent = true },
     },
     opts = {
       close_if_last_window = true, -- optional: auto-close Neo-tree if it's the last window
+      window = {
+        position = 'right',
+        width = 42,
+      },
       event_handlers = {
         {
           event = 'file_opened',
@@ -94,6 +97,15 @@ require('lazy').setup({
             ['\\'] = 'close_window',
           },
         },
+      },
+      default_component_configs = {
+        indent = {
+          with_markers = true,
+          indent_marker = '│',
+          last_indent_marker = '└',
+          indent_size = 2,
+        },
+        icon = { enabled = false },
       },
     },
   },
