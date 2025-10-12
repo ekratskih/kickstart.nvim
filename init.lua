@@ -79,6 +79,9 @@ require('lazy').setup({
     },
     opts = {
       close_if_last_window = true, -- optional: auto-close Neo-tree if it's the last window
+      enable_git_status = false,
+      enable_diagnostics = false,
+
       window = {
         position = 'right',
         width = 42,
@@ -375,6 +378,7 @@ require('lazy').setup({
         yaml = { 'prettier' },
         markdown = { 'prettier' },
         graphql = { 'prettier' },
+        go = { 'gofmt', 'goimports' },
       },
     },
   },
