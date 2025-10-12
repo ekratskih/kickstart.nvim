@@ -33,7 +33,7 @@ vim.o.scrolloff = 0
 vim.o.confirm = true
 vim.o.background = 'light'
 vim.o.hlsearch = false
-vim.cmd.colorscheme 'default'
+vim.cmd.colorscheme 'quiet'
 
 -- [[ Basic Keymaps ]]
 -- Diagnostic keymaps
@@ -144,6 +144,14 @@ require('lazy').setup({
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
+          },
+        },
+        pickers = {
+          buffers = {
+            mappings = {
+              i = { ['<C-d>'] = 'delete_buffer' }, -- in insert mode
+              n = { ['<C-d>'] = 'delete_buffer' }, -- in normal mode
+            },
           },
         },
       }
@@ -284,17 +292,6 @@ require('lazy').setup({
 
       local servers = {
         -- clangd = {},
-        gopls = {
-          settings = {
-            gopls = {
-              analyses = {
-                unusedparams = true,
-                shadow = true,
-              },
-              staticcheck = true,
-            },
-          },
-        },
         pyright = {},
         ts_ls = {},
         lua_ls = {
@@ -546,6 +543,9 @@ vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'SignColumn', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'LineNr', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'EndOfBuffer', { bg = 'none' })
+
+-- Set selection color for telescope
+vim.api.nvim_set_hl(0, 'TelescopeSelection', { bg = '#e0e0e0', fg = '#000000' })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
