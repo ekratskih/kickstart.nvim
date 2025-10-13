@@ -11,6 +11,7 @@ vim.g.have_nerd_font = true
 
 -- Make line numbers default
 vim.o.relativenumber = true
+vim.o.syntax = 'enabled'
 vim.o.mouse = ''
 vim.o.termguicolors = true
 vim.o.showmode = false
@@ -31,9 +32,8 @@ vim.o.inccommand = ''
 vim.o.cursorline = false
 vim.o.scrolloff = 0
 vim.o.confirm = true
-vim.o.background = 'light'
 vim.o.hlsearch = false
-vim.cmd.colorscheme 'quiet'
+vim.o.background = 'light'
 
 -- [[ Basic Keymaps ]]
 -- Diagnostic keymaps
@@ -62,6 +62,24 @@ rtp:prepend(lazypath)
 --    :Lazy
 require('lazy').setup({
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
+  {
+    'rose-pine/neovim',
+    lazy = false,
+    priority = 1000,
+    opts = {
+      variant = 'dawn',
+      styles = {
+        bold = true,
+        italic = false,
+        transparency = true,
+      },
+    },
+    config = function(_, opts)
+      require('rose-pine').setup(opts)
+      vim.o.termguicolors = true
+      vim.cmd 'colorscheme rose-pine'
+    end,
+  },
 
   -- Neo-tree is a Neovim plugin to browse the file system
   -- https://github.com/nvim-neo-tree/neo-tree.nvim
