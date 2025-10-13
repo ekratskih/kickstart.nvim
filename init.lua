@@ -71,7 +71,11 @@ require('lazy').setup({
       styles = {
         bold = true,
         italic = false,
-        transparency = true,
+        transparency = false,
+      },
+      highlight_groups = {
+        TelescopeNormal = { bg = 'base' },
+        TelescopeBorder = { bg = 'base' },
       },
     },
     config = function(_, opts)
