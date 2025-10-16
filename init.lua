@@ -166,6 +166,9 @@ require('lazy').setup({
     },
     config = function()
       require('telescope').setup {
+        defaults = {
+          path_display = { 'smart' },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -192,6 +195,15 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+
+      -- Search for the word under cursor using live_grep
+      vim.keymap.set('n', '<leader>sp', function()
+        local word = vim.fn.expand '<cword>'
+        builtin.live_grep {
+          default_text = word,
+          prompt_title = 'Live Grep: ' .. word,
+        }
+      end, { desc = '[S]earch [P]attern under cursor' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
