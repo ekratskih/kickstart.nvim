@@ -176,6 +176,8 @@ require('lazy').setup({
         },
         pickers = {
           buffers = {
+            sort_mru = true,
+            sort_lastused = true,
             mappings = {
               i = { ['<C-d>'] = 'delete_buffer' }, -- in insert mode
               n = { ['<C-d>'] = 'delete_buffer' }, -- in normal mode
@@ -281,7 +283,8 @@ require('lazy').setup({
 
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
-          map('gO', require('telescope.builtin').lsp_document_symbols, 'Open Document Symbols')
+          -- map('gO', require('telescope.builtin').lsp_document_symbols, 'Open Document Symbols')
+          map('gO', require('telescope.builtin').treesitter, 'Open Document Symbols')
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
@@ -517,6 +520,9 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter-textobjects',
+    },
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     opts = {
@@ -526,6 +532,30 @@ require('lazy').setup({
       highlight = {
         enable = true,
         additional_vim_regex_highlighting = { 'ruby' },
+      },
+      textobjects = {
+        select = {
+          enable = true,
+          lookahead = true, -- automatically jump forward to textobj
+          keymaps = {
+            ['af'] = '@function.outer',
+            ['if'] = '@function.inner',
+            ['ac'] = '@class.outer',
+            ['ic'] = '@class.inner',
+          },
+        },
+        move = {
+          enable = true,
+          set_jumps = true,
+          goto_next_start = {
+            [']f'] = '@function.outer',
+            [']c'] = '@class.outer',
+          },
+          goto_previous_start = {
+            ['[f'] = '@function.outer',
+            ['[c'] = '@class.outer',
+          },
+        },
       },
       indent = { enable = true, disable = { 'ruby' } },
     },
