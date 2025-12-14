@@ -81,7 +81,8 @@ require('lazy').setup({
     config = function(_, opts)
       require('rose-pine').setup(opts)
       vim.o.termguicolors = true
-      vim.cmd 'colorscheme rose-pine'
+      -- vim.cmd 'colorscheme rose-pine'
+      vim.cmd 'colorscheme default'
     end,
   },
 
@@ -103,7 +104,6 @@ require('lazy').setup({
       close_if_last_window = true, -- optional: auto-close Neo-tree if it's the last window
       enable_git_status = false,
       enable_diagnostics = false,
-
       window = {
         position = 'right',
         width = 42,
@@ -431,50 +431,14 @@ require('lazy').setup({
     event = 'VimEnter',
     version = '1.*',
     dependencies = {
-      -- Snippet Engine
-      {
-        'L3MON4D3/LuaSnip',
-        version = '2.*',
-        build = (function()
-          if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
-            return
-          end
-          return 'make install_jsregexp'
-        end)(),
-        dependencies = {},
-        opts = {},
-      },
       'folke/lazydev.nvim',
     },
     --- @module 'blink.cmp'
     --- @type blink.cmp.Config
     opts = {
       keymap = {
-        -- 'default' (recommended) for mappings similar to built-in completions
-        --   <c-y> to accept ([y]es) the completion.
-        --    This will auto-import if your LSP supports it.
-        --    This will expand snippets if the LSP sent a snippet.
-        -- 'super-tab' for tab to accept
-        -- 'enter' for enter to accept
-        -- 'none' for no mappings
-        --
-        -- For an understanding of why the 'default' preset is recommended,
-        -- you will need to read `:help ins-completion`
-        --
-        -- No, but seriously. Please read `:help ins-completion`, it is really good!
-        --
-        -- All presets have the following mappings:
-        -- <tab>/<s-tab>: move to right/left of your snippet expansion
-        -- <c-space>: Open menu or open docs if already open
-        -- <c-n>/<c-p> or <up>/<down>: Select next/previous item
-        -- <c-e>: Hide menu
-        -- <c-k>: Toggle signature help
-        --
-        -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'enter',
-
-        -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
-        --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
+        preset = 'default',
+        ['<C-e>'] = { 'show', 'show_documentation', 'hide_documentation' },
       },
 
       appearance = {
@@ -482,10 +446,14 @@ require('lazy').setup({
       },
 
       completion = {
-        -- By default, you may press `<c-space>` to show the documentation.
-        -- Optionally, set `auto_show = true` to show the documentation after a delay.
+        -- Controls the visibility of the completion menu
+        menu = { auto_show = false },
+
+        -- Documentation settings
         documentation = { auto_show = false },
-        trigger = { show_on_keyword = true },
+
+        -- Update trigger settings (optional, but consistent with manual mode)
+        trigger = { show_on_keyword = false },
       },
 
       sources = {
@@ -495,7 +463,7 @@ require('lazy').setup({
         },
       },
 
-      snippets = { preset = 'luasnip' },
+      snippets = {},
 
       -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
       -- which automatically downloads a prebuilt binary when enabled.
@@ -510,14 +478,6 @@ require('lazy').setup({
       signature = { enabled = false },
     },
   },
-
-  --{ -- Collection of various small independent plugins/modules
-  --  'echasnovski/mini.nvim',
-  --  config = function()
-  --    local statusline = require 'mini.statusline'
-  --    statusline.setup { use_icons = vim.g.have_nerd_font }
-  --  end,
-  -- },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     dependencies = {
@@ -526,7 +486,7 @@ require('lazy').setup({
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     opts = {
-      ensure_installed = { 'bash', 'go', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'python' },
+      ensure_installed = { 'bash', 'go', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'python', 'zig' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
