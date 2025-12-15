@@ -178,6 +178,7 @@ require('lazy').setup({
           buffers = {
             sort_mru = true,
             sort_lastused = true,
+            initial_mode = 'normal',
             mappings = {
               i = { ['<C-d>'] = 'delete_buffer' }, -- in insert mode
               n = { ['<C-d>'] = 'delete_buffer' }, -- in normal mode
@@ -252,7 +253,18 @@ require('lazy').setup({
       { 'mason-org/mason.nvim', opts = {} },
       'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
-      { 'j-hui/fidget.nvim', opts = {} },
+      {
+        'j-hui/fidget.nvim',
+        opts = {
+          notification = {
+            window = {
+              normal_hl = 'Normal',
+              winblend = 0,
+              border = 'none',
+            },
+          },
+        },
+      },
       'saghen/blink.cmp',
     },
     config = function()
@@ -352,7 +364,8 @@ require('lazy').setup({
 
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
+        'stylua',
+        'gopls',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
