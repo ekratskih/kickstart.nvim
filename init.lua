@@ -89,50 +89,17 @@ require('lazy').setup({
   -- Neo-tree is a Neovim plugin to browse the file system
   -- https://github.com/nvim-neo-tree/neo-tree.nvim
   {
-    'nvim-neo-tree/neo-tree.nvim',
-    version = '*',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
-      'MunifTanjim/nui.nvim',
-    },
+    'preservim/nerdtree',
     lazy = false,
     keys = {
-      { '\\', ':Neotree toggle current reveal_force_cwd position=right<CR>', desc = 'NeoTree reveal', silent = true },
+      { '\\', ':NERDTreeToggle<CR>', desc = 'NERDTree reveal', silent = true },
     },
-    opts = {
-      close_if_last_window = true, -- optional: auto-close Neo-tree if it's the last window
-      enable_git_status = false,
-      enable_diagnostics = false,
-      window = {
-        position = 'right',
-        width = 42,
-      },
-      event_handlers = {
-        {
-          event = 'file_opened',
-          handler = function(file_path)
-            require('neo-tree.command').execute { action = 'close' }
-          end,
-        },
-      },
-      filesystem = {
-        window = {
-          mappings = {
-            ['\\'] = 'close_window',
-          },
-        },
-      },
-      default_component_configs = {
-        indent = {
-          with_markers = true,
-          indent_marker = '│',
-          last_indent_marker = '└',
-          indent_size = 2,
-        },
-        icon = { enabled = false },
-      },
-    },
+    config = function()
+      vim.g.NERDTreeWinPos = 'right'
+      vim.g.NERDTreeMinimalUI = 1
+      vim.g.NERDTreeWinSize = 40
+      vim.g.NERDTreeQuitOnOpen = 3
+    end,
   },
 
   -- See `:help gitsigns` to understand what the configuration keys do
