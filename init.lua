@@ -33,7 +33,7 @@ vim.o.cursorline = false
 vim.o.scrolloff = 0
 vim.o.confirm = true
 vim.o.hlsearch = false
-vim.o.background = 'light'
+vim.o.background = 'dark'
 
 -- [[ Basic Keymaps ]]
 -- Diagnostic keymaps
@@ -81,8 +81,8 @@ require('lazy').setup({
     config = function(_, opts)
       require('rose-pine').setup(opts)
       vim.o.termguicolors = true
-      -- vim.cmd 'colorscheme rose-pine'
-      vim.cmd 'colorscheme default'
+      vim.cmd 'colorscheme rose-pine-main'
+      -- vim.cmd 'colorscheme default'
     end,
   },
 
@@ -160,59 +160,50 @@ require('lazy').setup({
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      local function use_minimal(fn, overrides)
+        local minimal_conf = {
+          previewer = false,
+          theme = 'dropdown',
+          sorting_strategy = 'ascending',
+          layout_config = {
+            width = 0.7,
+            height = 0.4,
+            prompt_position = 'top',
+          },
+        }
+        overrides = overrides or {}
+        return function()
+          fn(vim.tbl_extend('force', minimal_conf, overrides))
+        end
+      end
 
-      -- Search for the word under cursor using live_grep
+      vim.keymap.set('n', '<leader>sr', builtin.resume)
+      vim.keymap.set('n', '<leader>sf', use_minimal(builtin.find_files))
+      vim.keymap.set('n', '<leader>sw', use_minimal(builtin.grep_string))
+      vim.keymap.set('n', '<leader>sg', use_minimal(builtin.live_grep))
+      vim.keymap.set('n', '<leader>s/', use_minimal(builtin.live_grep, { grep_open_files = true }))
+      vim.keymap.set('n', '<leader>/', use_minimal(builtin.current_buffer_fuzzy_find))
+      vim.keymap.set('n', '<leader><leader>', use_minimal(builtin.buffers, { show_all_buffers = true }))
       vim.keymap.set('n', '<leader>sp', function()
         local word = vim.fn.expand '<cword>'
-        builtin.live_grep {
-          default_text = word,
-          prompt_title = 'Live Grep: ' .. word,
-        }
-      end, { desc = '[S]earch [P]attern under cursor' })
-
-      -- Slightly advanced example of overriding default behavior and theme
-      vim.keymap.set('n', '<leader>/', function()
-        -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-          winblend = 0,
-          previewer = false,
-        })
-      end, { desc = '[/] Fuzzily search in current buffer' })
-
-      -- It's also possible to pass additional configuration options.
-      --  See `:help telescope.builtin.live_grep()` for information about particular keys
-      vim.keymap.set('n', '<leader>s/', function()
-        builtin.live_grep {
-          grep_open_files = true,
-          prompt_title = 'Live Grep in Open Files',
-        }
-      end, { desc = '[S]earch [/] in Open Files' })
-
-      -- Shortcut for searching your Neovim configuration files
-      vim.keymap.set('n', '<leader>sn', function()
-        builtin.find_files { cwd = vim.fn.stdpath 'config' }
-      end, { desc = '[S]earch [N]eovim files' })
+        use_minimal(builtin.live_grep, { default_text = vim.fn.expand '<cword>' })()
+      end)
     end,
   },
 
-  -- LSP Plugins
   {
-    -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
-    -- used for completion, annotations and signatures of Neovim apis
     'folke/lazydev.nvim',
     ft = 'lua',
+    dependencies = {
+      { 'Bilal2453/luvit-meta', lazy = true }, -- Add this line
+    },
     opts = {
       library = {
-        -- Load luvit types when the `vim.uv` word is found
-        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+        { path = 'luvit-meta/library', words = { 'vim%.uv' } },
       },
     },
   },
+
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
@@ -389,18 +380,18 @@ require('lazy').setup({
             return { 'isort', 'black' }
           end
         end,
-        javascript = { 'prettier' },
-        typescript = { 'prettier' },
-        javascriptreact = { 'prettier' },
-        typescriptreact = { 'prettier' },
-        json = { 'prettier' },
-        html = { 'prettier' },
-        css = { 'prettier' },
-        scss = { 'prettier' },
-        less = { 'prettier' },
-        yaml = { 'prettier' },
-        markdown = { 'prettier' },
-        graphql = { 'prettier' },
+        javascript = { 'prettierd' },
+        typescript = { 'prettierd' },
+        javascriptreact = { 'prettierd' },
+        typescriptreact = { 'prettierd' },
+        json = { 'prettierd' },
+        html = { 'prettierd' },
+        css = { 'prettierd' },
+        scss = { 'prettierd' },
+        less = { 'prettierd' },
+        yaml = { 'prettierd' },
+        markdown = { 'prettierd' },
+        graphql = { 'prettierd' },
         go = { 'gofmt', 'goimports' },
       },
     },
@@ -417,7 +408,8 @@ require('lazy').setup({
     --- @type blink.cmp.Config
     opts = {
       keymap = {
-        preset = 'default',
+        preset = 'super-tab',
+        -- preset = 'default',
         ['<C-e>'] = { 'show', 'show_documentation', 'hide_documentation' },
       },
 
@@ -427,13 +419,20 @@ require('lazy').setup({
 
       completion = {
         -- Controls the visibility of the completion menu
-        menu = { auto_show = false },
+        menu = { auto_show = true },
 
         -- Documentation settings
         documentation = { auto_show = false },
 
         -- Update trigger settings (optional, but consistent with manual mode)
-        trigger = { show_on_keyword = false },
+        trigger = { show_on_keyword = true },
+
+        list = {
+          selection = {
+            preselect = true,
+            auto_insert = true,
+          },
+        },
       },
 
       sources = {
