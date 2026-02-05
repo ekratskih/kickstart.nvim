@@ -10,7 +10,7 @@ vim.g.have_nerd_font = true
 --  For more options, you can see `:help option-list`
 
 -- Make line numbers default
-vim.o.relativenumber = true
+vim.o.relativenumber = false
 vim.o.syntax = 'enabled'
 vim.o.mouse = ''
 vim.o.termguicolors = true
@@ -551,6 +551,14 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.bo.tabstop = 4
     vim.bo.shiftwidth = 4
     vim.bo.softtabstop = 0
+  end,
+})
+
+-- Disable syntax highlighting for markdown files
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'markdown' },
+  callback = function()
+    vim.bo.syntax = 'off'
   end,
 })
 
