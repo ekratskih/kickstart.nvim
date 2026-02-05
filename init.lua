@@ -166,7 +166,7 @@ require('lazy').setup({
           theme = 'dropdown',
           sorting_strategy = 'ascending',
           layout_config = {
-            width = 0.7,
+            width = 0.4,
             height = 0.4,
             prompt_position = 'top',
           },
@@ -301,7 +301,10 @@ require('lazy').setup({
       local capabilities = require('blink.cmp').get_lsp_capabilities()
 
       local servers = {
-        -- clangd = {},
+        clangd = {
+          cmd = { 'clangd', '--background-index' },
+          root_dir = require('lspconfig').util.root_pattern('compile_flags.txt', '.git'),
+        },
         pyright = {},
         ts_ls = {},
         lua_ls = {
@@ -361,7 +364,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { cpp = true }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         else
@@ -373,6 +376,7 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        c = { 'clang-format' },
         python = function(bufnr)
           if require('conform').get_formatter_info('ruff_format', bufnr).available then
             return { 'ruff_format' }
@@ -531,7 +535,7 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'python', 'htmldjango' },
+  pattern = { 'python', 'htmldjango', 'c' },
   callback = function()
     vim.bo.expandtab = true
     vim.bo.tabstop = 4
