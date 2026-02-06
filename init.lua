@@ -93,6 +93,7 @@ require('lazy').setup({
     lazy = false,
     keys = {
       { '\\', ':NERDTreeToggle<CR>', desc = 'NERDTree reveal', silent = true },
+      { '|', ':NERDTreeFind<CR>', desc = 'NERDTree find current file', silent = true },
     },
     config = function()
       vim.g.NERDTreeWinPos = 'right'
@@ -324,10 +325,7 @@ require('lazy').setup({
       }
 
       local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
-        'stylua',
-        'gopls',
-      })
+      vim.list_extend(ensure_installed, { 'stylua' })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
