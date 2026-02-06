@@ -11,6 +11,7 @@ vim.g.have_nerd_font = true
 
 -- Make line numbers default
 vim.o.relativenumber = false
+vim.o.ruler = false
 vim.o.syntax = 'enabled'
 vim.o.mouse = ''
 vim.o.termguicolors = true
@@ -22,7 +23,7 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.signcolumn = 'yes'
 vim.o.updatetime = 250
-vim.o.timeoutlen = 300
+vim.o.timeoutlen = 500
 vim.o.termguicolors = true
 vim.o.splitright = true
 vim.o.splitbelow = true
@@ -33,7 +34,25 @@ vim.o.cursorline = false
 vim.o.scrolloff = 0
 vim.o.confirm = true
 vim.o.hlsearch = false
-vim.o.background = 'dark'
+vim.o.background = 'light'
+
+-- Helper function to use minimal telescope theme
+local function use_minimal(fn, overrides)
+  local minimal_conf = {
+    previewer = false,
+    theme = 'dropdown',
+    sorting_strategy = 'ascending',
+    layout_config = {
+      width = 0.4,
+      height = 0.4,
+      prompt_position = 'top',
+    },
+  }
+  overrides = overrides or {}
+  return function()
+    fn(vim.tbl_extend('force', minimal_conf, overrides))
+  end
+end
 
 -- [[ Basic Keymaps ]]
 -- Diagnostic keymaps
@@ -81,7 +100,7 @@ require('lazy').setup({
     config = function(_, opts)
       require('rose-pine').setup(opts)
       vim.o.termguicolors = true
-      vim.cmd 'colorscheme rose-pine-main'
+      vim.cmd 'colorscheme rose-pine-dawn'
       -- vim.cmd 'colorscheme default'
     end,
   },
@@ -161,22 +180,6 @@ require('lazy').setup({
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
-      local function use_minimal(fn, overrides)
-        local minimal_conf = {
-          previewer = false,
-          theme = 'dropdown',
-          sorting_strategy = 'ascending',
-          layout_config = {
-            width = 0.4,
-            height = 0.4,
-            prompt_position = 'top',
-          },
-        }
-        overrides = overrides or {}
-        return function()
-          fn(vim.tbl_extend('force', minimal_conf, overrides))
-        end
-      end
 
       vim.keymap.set('n', '<leader>sr', builtin.resume)
       vim.keymap.set('n', '<leader>sf', use_minimal(builtin.find_files))
@@ -255,7 +258,13 @@ require('lazy').setup({
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
           -- map('gO', require('telescope.builtin').lsp_document_symbols, 'Open Document Symbols')
-          map('gO', require('telescope.builtin').treesitter, 'Open Document Symbols')
+          map(
+            'gO',
+            use_minimal(require('telescope.builtin').treesitter, {
+              symbols = { 'function', 'method', 'class', 'struct', 'interface', 'type', 'module', 'namespace', 'constant', 'variable' },
+            }),
+            'Open Document Symbols'
+          )
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
@@ -306,6 +315,9 @@ require('lazy').setup({
           cmd = { 'clangd', '--background-index' },
           root_dir = require('lspconfig').util.root_pattern('compile_flags.txt', '.git'),
         },
+        emmet_language_server = {
+          filetypes = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'svelte', 'vue' },
+        },
         pyright = {},
         ts_ls = {},
         lua_ls = {
@@ -325,7 +337,7 @@ require('lazy').setup({
       }
 
       local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, { 'stylua' })
+      vim.list_extend(ensure_installed, { 'stylua', 'emmet-language-server' })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
