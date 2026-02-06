@@ -82,26 +82,9 @@ rtp:prepend(lazypath)
 require('lazy').setup({
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
   {
-    'rose-pine/neovim',
-    lazy = false,
-    priority = 1000,
-    opts = {
-      variant = 'dawn',
-      styles = {
-        bold = true,
-        italic = false,
-        transparency = false,
-      },
-      highlight_groups = {
-        TelescopeNormal = { bg = 'base' },
-        TelescopeBorder = { bg = 'base' },
-      },
-    },
-    config = function(_, opts)
-      require('rose-pine').setup(opts)
-      vim.o.termguicolors = true
-      vim.cmd 'colorscheme rose-pine-dawn'
-      -- vim.cmd 'colorscheme default'
+    'funnyVariable/blank.nvim',
+    config = function()
+      vim.cmd 'colorscheme blank'
     end,
   },
 
