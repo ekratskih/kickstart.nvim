@@ -43,8 +43,8 @@ local function use_minimal(fn, overrides)
     theme = 'dropdown',
     sorting_strategy = 'ascending',
     layout_config = {
-      width = 0.4,
-      height = 0.4,
+      width = 0.7,
+      height = 0.5,
       prompt_position = 'top',
     },
   }
@@ -55,8 +55,14 @@ local function use_minimal(fn, overrides)
 end
 
 -- [[ Basic Keymaps ]]
--- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+-- Open diagnostics quickfix list
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
+-- Toggle diagnostics in the gutter
+vim.keymap.set('n', '<leader>td', function()
+  vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+end)
+-- Toggle git signs in the gutter
+vim.keymap.set('n', '<leader>tg', ':Gitsigns toggle_signs<CR>', { silent = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -94,8 +100,8 @@ require('lazy').setup({
     'preservim/nerdtree',
     lazy = false,
     keys = {
-      { '\\', ':NERDTreeToggle<CR>', desc = 'NERDTree reveal', silent = true },
-      { '|', ':NERDTreeFind<CR>', desc = 'NERDTree find current file', silent = true },
+      { '\\', ':NERDTreeToggle<CR>', silent = true }, -- Toggle file tree
+      { '|', ':NERDTreeFind<CR>', silent = true }, -- Reveal current file in tree
     },
     config = function()
       vim.g.NERDTreeWinPos = 'right'
@@ -216,47 +222,39 @@ require('lazy').setup({
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
-          local map = function(keys, func, desc, mode)
+          local map = function(keys, func, _, mode)
             mode = mode or 'n'
-            vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+            vim.keymap.set(mode, keys, func, { buffer = event.buf })
           end
 
-          -- Rename the variable under your cursor.
-          map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
+          -- Rename symbol
+          map('grn', vim.lsp.buf.rename)
 
-          -- Find references for the word under your cursor.
-          map('grr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+          -- Find references
+          map('grr', require('telescope.builtin').lsp_references)
 
-          -- Jump to the implementation of the word under your cursor.
-          --  Useful when your language has ways of declaring types without an actual implementation.
-          map('gri', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+          -- Go to implementation
+          map('gri', require('telescope.builtin').lsp_implementations)
 
-          -- Jump to the definition of the word under your cursor.
-          --  To jump back, press <C-t>.
-          map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+          -- Go to definition
+          map('grd', require('telescope.builtin').lsp_definitions)
 
-          -- WARN: This is not Goto Definition, this is Goto Declaration.
-          map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+          -- Go to declaration
+          map('grD', vim.lsp.buf.declaration)
 
-          -- Fuzzy find all the symbols in your current document.
-          --  Symbols are things like variables, functions, types, etc.
-          -- map('gO', require('telescope.builtin').lsp_document_symbols, 'Open Document Symbols')
+          -- Open document symbols
           map(
             'gO',
             use_minimal(require('telescope.builtin').treesitter, {
               symbols = { 'function', 'method', 'class', 'struct', 'interface', 'type', 'module', 'namespace', 'constant', 'variable' },
-            }),
-            'Open Document Symbols'
+            })
           )
 
-          -- Fuzzy find all the symbols in your current workspace.
-          --  Similar to document symbols, except searches over your entire project.
-          map('gW', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Open Workspace Symbols')
+          -- Open workspace symbols
+          map('gW', require('telescope.builtin').lsp_dynamic_workspace_symbols)
 
-          -- Jump to the type of the word under your cursor.
-          --  Useful when you're not sure what type a variable is and you want to see
-          --  the definition of its *type*, not where it was *defined*.
-          map('grt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition')
+          -- Go to type definition
+          map('grt', require('telescope.builtin').lsp_type_definitions)
 
           -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
           ---@param client vim.lsp.Client
@@ -337,7 +335,7 @@ require('lazy').setup({
     end,
   },
 
-  { -- Autoformat
+  { -- Autoformat (<leader>f to format buffer)
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
     cmd = { 'ConformInfo' },
@@ -348,7 +346,6 @@ require('lazy').setup({
           require('conform').format { async = true, lsp_format = 'fallback' }
         end,
         mode = '',
-        desc = '[F]ormat buffer',
       },
     },
     opts = {
