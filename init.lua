@@ -122,6 +122,12 @@ require('lazy').setup({
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
+      on_attach = function(bufnr)
+        local gs = require 'gitsigns'
+        vim.keymap.set('n', '<leader>hr', gs.reset_hunk)
+        vim.keymap.set('n', ']h', gs.next_hunk)
+        vim.keymap.set('n', '[h', gs.prev_hunk)
+      end,
     },
   },
 
