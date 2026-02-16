@@ -35,6 +35,8 @@ vim.o.scrolloff = 0
 vim.o.confirm = true
 vim.o.hlsearch = false
 vim.o.background = 'light'
+vim.o.laststatus = 0
+vim.o.cmdheight = 0
 
 -- Helper function to use minimal telescope theme
 local function use_minimal(fn, overrides)
@@ -85,12 +87,12 @@ rtp:prepend(lazypath)
 --
 --  To check the current status of your plugins, run
 --    :Lazy
-require('lazy').setup({
+require('lazy').setup {
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
   {
-    'funnyVariable/blank.nvim',
+    'sderev/alabaster.vim',
     config = function()
-      vim.cmd 'colorscheme blank'
+      vim.cmd 'colorscheme alabaster'
     end,
   },
 
@@ -436,10 +438,17 @@ require('lazy').setup({
       },
 
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev' },
+        default = function()
+          return { 'lsp', 'path', 'lazydev' }
+        end,
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
         },
+        transform_items = function(_, items)
+          return vim.tbl_filter(function(item)
+            return item.kind ~= require('blink.cmp.types').CompletionItemKind.Snippet
+          end, items)
+        end,
       },
 
       snippets = {},
@@ -451,7 +460,7 @@ require('lazy').setup({
       -- the rust implementation via `'prefer_rust_with_warning'`
       --
       -- See :h blink-cmp-config-fuzzy for more information
-      fuzzy = { implementation = 'lua' },
+      fuzzy = { implementation = 'prefer_rust' },
 
       -- Shows a signature help window while you type arguments for a function
       signature = { enabled = false },
@@ -470,7 +479,6 @@ require('lazy').setup({
       auto_install = true,
       highlight = {
         enable = true,
-        additional_vim_regex_highlighting = { 'ruby' },
       },
       textobjects = {
         select = {
@@ -499,25 +507,7 @@ require('lazy').setup({
       indent = { enable = true, disable = { 'ruby' } },
     },
   },
-}, {
-  ui = {
-    icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
-    },
-  },
-})
+}
 
 -- Smart indentation rules by filetype
 vim.api.nvim_create_autocmd('FileType', {
@@ -547,14 +537,6 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.bo.tabstop = 4
     vim.bo.shiftwidth = 4
     vim.bo.softtabstop = 0
-  end,
-})
-
--- Disable syntax highlighting for markdown files
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'markdown' },
-  callback = function()
-    vim.bo.syntax = 'off'
   end,
 })
 
