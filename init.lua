@@ -90,9 +90,9 @@ rtp:prepend(lazypath)
 require('lazy').setup {
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
   {
-    'sderev/alabaster.vim',
+    'ekratskih/monochromator-remix',
     config = function()
-      vim.cmd 'colorscheme alabaster'
+      vim.cmd 'colorscheme monochromator-light-emerald'
     end,
   },
 
@@ -489,6 +489,8 @@ require('lazy').setup {
             ['if'] = '@function.inner',
             ['ac'] = '@class.outer',
             ['ic'] = '@class.inner',
+            ['aC'] = '@comment.outer',
+            ['iC'] = '@comment.inner',
           },
         },
         move = {
