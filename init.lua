@@ -36,7 +36,7 @@ vim.o.confirm = true
 vim.o.hlsearch = false
 vim.o.background = 'light'
 vim.o.laststatus = 0
-vim.o.cmdheight = 0
+vim.o.cmdheight = 1
 
 -- Helper function to use minimal telescope theme
 local function use_minimal(fn, overrides)
@@ -543,11 +543,11 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 -- Disable all background colors
-vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
-vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
-vim.api.nvim_set_hl(0, 'SignColumn', { bg = 'none' })
-vim.api.nvim_set_hl(0, 'LineNr', { bg = 'none' })
-vim.api.nvim_set_hl(0, 'EndOfBuffer', { bg = 'none' })
+-- vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
+-- vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
+-- vim.api.nvim_set_hl(0, 'SignColumn', { bg = 'none' })
+-- vim.api.nvim_set_hl(0, 'LineNr', { bg = 'none' })
+-- vim.api.nvim_set_hl(0, 'EndOfBuffer', { bg = 'none' })
 
 -- Set selection color for telescope
 vim.api.nvim_set_hl(0, 'TelescopeSelection', { bg = '#e0e0e0', fg = '#000000' })
