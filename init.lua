@@ -55,7 +55,7 @@ local function use_minimal(fn, overrides)
     fn(vim.tbl_extend('force', minimal_conf, overrides))
   end
 end
-
+-- FIXME: sdfasdf
 -- [[ Basic Keymaps ]]
 -- Open diagnostics quickfix list
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
@@ -162,7 +162,7 @@ require('lazy').setup {
           buffers = {
             sort_mru = true,
             sort_lastused = true,
-            initial_mode = 'normal',
+            -- initial_mode = 'normal',
             mappings = {
               i = { ['<C-d>'] = 'delete_buffer' }, -- in insert mode
               n = { ['<C-d>'] = 'delete_buffer' }, -- in normal mode
@@ -191,7 +191,6 @@ require('lazy').setup {
       end)
     end,
   },
-
   {
     'folke/lazydev.nvim',
     ft = 'lua',
@@ -204,7 +203,18 @@ require('lazy').setup {
       },
     },
   },
-
+  {
+    'folke/todo-comments.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = {
+      signs = true,
+    },
+  },
+  {
+    'kylechui/nvim-surround',
+    event = 'VeryLazy',
+    opts = {},
+  },
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
@@ -451,7 +461,12 @@ require('lazy').setup {
         end,
       },
 
-      snippets = {},
+      snippets = {
+        expand = function(snippet)
+          vim.snippet.expand(snippet)
+          vim.snippet.stop()
+        end,
+      },
 
       -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
       -- which automatically downloads a prebuilt binary when enabled.
@@ -510,6 +525,14 @@ require('lazy').setup {
     },
   },
 }
+
+-- Fix todo-comments highlights for monochromator (cterm-only colorscheme)
+local cterm_colors = { FIX = 1, TODO = 4, HACK = 3, WARN = 3, PERF = 5, NOTE = 2, TEST = 5 }
+for kw, color in pairs(cterm_colors) do
+  vim.api.nvim_set_hl(0, 'TodoBg' .. kw, { ctermbg = color, ctermfg = 15, bold = true })
+  vim.api.nvim_set_hl(0, 'TodoFg' .. kw, { ctermfg = color })
+  vim.api.nvim_set_hl(0, 'TodoSign' .. kw, { ctermfg = color })
+end
 
 -- Smart indentation rules by filetype
 vim.api.nvim_create_autocmd('FileType', {
