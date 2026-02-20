@@ -103,6 +103,11 @@ require('lazy').setup {
       { '|', '<cmd>NvimTreeFindFile<cr>', silent = true },
     },
     opts = {
+      git = { enable = false },
+      renderer = {
+        special_files = {},
+        icons = { show = { file = false, folder = false } },
+      },
       view = { side = 'right', width = 40 },
       actions = { open_file = { quit_on_open = true } },
     },
