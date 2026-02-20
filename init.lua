@@ -36,7 +36,7 @@ vim.o.confirm = true
 vim.o.hlsearch = false
 vim.o.background = 'light'
 vim.o.laststatus = 0
-vim.o.cmdheight = 1
+vim.o.cmdheight = 0
 
 -- Helper function to use minimal telescope theme
 local function use_minimal(fn, overrides)
@@ -55,7 +55,6 @@ local function use_minimal(fn, overrides)
     fn(vim.tbl_extend('force', minimal_conf, overrides))
   end
 end
--- FIXME: sdfasdf
 -- [[ Basic Keymaps ]]
 -- Open diagnostics quickfix list
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
@@ -96,21 +95,17 @@ require('lazy').setup {
     end,
   },
 
-  -- Neo-tree is a Neovim plugin to browse the file system
-  -- https://github.com/nvim-neo-tree/neo-tree.nvim
   {
-    'preservim/nerdtree',
-    lazy = false,
+    'nvim-tree/nvim-tree.lua',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     keys = {
-      { '\\', ':NERDTreeToggle<CR>', silent = true }, -- Toggle file tree
-      { '|', ':NERDTreeFind<CR>', silent = true }, -- Reveal current file in tree
+      { '\\', '<cmd>NvimTreeToggle<cr>', silent = true },
+      { '|', '<cmd>NvimTreeFindFile<cr>', silent = true },
     },
-    config = function()
-      vim.g.NERDTreeWinPos = 'right'
-      vim.g.NERDTreeMinimalUI = 1
-      vim.g.NERDTreeWinSize = 40
-      vim.g.NERDTreeQuitOnOpen = 3
-    end,
+    opts = {
+      view = { side = 'right', width = 40 },
+      actions = { open_file = { quit_on_open = true } },
+    },
   },
 
   -- See `:help gitsigns` to understand what the configuration keys do
