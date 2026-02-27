@@ -154,6 +154,9 @@ require('lazy').setup {
           path_display = { 'truncate' },
         },
         extensions = {
+          fzf = {
+            fuzzy = false, -- only do exact matching
+          },
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
