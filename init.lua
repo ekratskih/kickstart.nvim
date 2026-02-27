@@ -106,7 +106,7 @@ require('lazy').setup {
       git = { enable = false },
       renderer = {
         special_files = {},
-        icons = { show = { file = false, folder = false } },
+        icons = { show = { file = false, folder = false, folder_arrow = false } },
       },
       view = { side = 'right', width = 40 },
       actions = { open_file = { quit_on_open = true } },
@@ -151,7 +151,7 @@ require('lazy').setup {
     config = function()
       require('telescope').setup {
         defaults = {
-          path_display = { 'smart' },
+          path_display = { 'truncate' },
         },
         extensions = {
           ['ui-select'] = {
