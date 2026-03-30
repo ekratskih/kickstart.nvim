@@ -34,7 +34,7 @@ vim.o.cursorline = false
 vim.o.scrolloff = 0
 vim.o.confirm = true
 vim.o.hlsearch = false
-vim.o.background = 'light'
+vim.o.background = 'dark'
 vim.o.laststatus = 0
 vim.o.cmdheight = 0
 
@@ -89,11 +89,35 @@ rtp:prepend(lazypath)
 require('lazy').setup {
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
   {
-    'ekratskih/monochromator-remix',
+    'metalelf0/black-metal-theme-neovim',
+    lazy = false,
+    priority = 1000,
     config = function()
-      vim.cmd 'colorscheme monochromator-light-emerald'
+      require('black-metal').setup {
+        -- optional configuration here
+        variant = 'dark',
+        theme = 'marduk',
+        code_style = {
+          comments = 'none',
+          conditionals = 'none',
+          functions = 'none',
+          keywords = 'none',
+          headings = 'bold', -- Markdown headings
+          operators = 'none',
+          keyword_return = 'none',
+          strings = 'none',
+          variables = 'none',
+        },
+      }
+      require('black-metal').load()
     end,
   },
+  -- {
+  --   'ekratskih/monochromator-remix',
+  --   config = function()
+  --     vim.cmd 'colorscheme monochromator-dark-emerald'
+  --   end,
+  -- },
 
   {
     'nvim-tree/nvim-tree.lua',
