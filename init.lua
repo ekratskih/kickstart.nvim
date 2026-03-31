@@ -97,6 +97,7 @@ require('lazy').setup {
         -- optional configuration here
         variant = 'dark',
         theme = 'marduk',
+        favor_treesitter_hl = true,
         code_style = {
           comments = 'none',
           conditionals = 'none',
@@ -592,15 +593,17 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
--- Disable all background colors
+-- Disable all background colors, might be useful for some themes with different background
 -- vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
 -- vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
 -- vim.api.nvim_set_hl(0, 'SignColumn', { bg = 'none' })
 -- vim.api.nvim_set_hl(0, 'LineNr', { bg = 'none' })
 -- vim.api.nvim_set_hl(0, 'EndOfBuffer', { bg = 'none' })
 
--- Set selection color for telescope
+-- Set selection color for telescope, might be useful for some themes
 vim.api.nvim_set_hl(0, 'TelescopeSelection', { bg = '#e0e0e0', fg = '#000000' })
+-- Black metal theme has annoying white background for read-only variables
+vim.api.nvim_set_hl(0, '@lsp.mod.readonly', {})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
